@@ -1,259 +1,31 @@
-# Import packages
-import os
-import cv2
-import numpy as np
-import tensorflow as tf
-import sys
+# objects1 = [{'RXBC_SHINY_CF': 98.98}, {'RXBC_TOUCH_AUD/NAV': 80.1}, {'RXBC_PWR_WDW_SW': 99.98}, {'RXBC_BL_ARR': 99.94},
+#  {'RXBC_PWR_WDW_SW': 99.93}, {'RXBC_AP_PWR_WDW_SW': 99.92}, {'RXBC_SHINY_STWH': 99.03}, {'RXBC_CTINT_AV': 90.62}, 
+#  {'RXBC_CTINT_AV': 88.71}, {'RXBC_CTINT_AV': 99.37}, {'RXBC_SHINY_STWH': 95.7}, {'RXBC_SHINY_CF': 93.1},
+#   {'RXBC_SHINY_CF': 91.63}, {'RXBC_SHINY_STWH': 85.09}, {'RXBC_ALU_STWH': 69.89}, {'RXBC_NO_STR_SW': 64.22}]
+
+# objects = [{'RXBC_PWR_WDW_SW': 99.98}, {'RXBC_PWR_WDW_SW': 99.93}, {'RXBC_PWR_WDW_SW': 99.99},  {'RXBC_CTINT_AV': 90.62}, 
+#  {'RXBC_CTINT_AV': 88.71}, {'RXBC_CTINT_AV': 99.37},  {'RXBC_SHINY_CF': 93.1}, {'RXBC_SHINY_CF': 91.63}]
+
+# result = []
+# import dummy as tf
+# dictionary = {}
+
+# for obj in objects:
+#     for key,val in obj.items():
+#         if key in dictionary:
+#             if (val > dictionary[key]):
+#                 dictionary[key] = val
+#         else:
+#             dictionary[key] = val
+# # print(dictionary)
+# for key, val in dictionary.items():
+#     result.append(key + "~" + str(val))
 
 
-class final_checking(object):
-	
-	def task1_final():
-		print("Task 1 final is executing")
+# data = {"output" : result}
+# print(data)
 
-	def task2_final():
-		print("Task 2 final is executing")
+import dummy
 
-	def task3_final():
-		# This is needed since the notebook is stored in the object_detection folder.
-		sys.path.append("..")
-		
-		# Import utilites
-		from utils import label_map_util
-		from utils import visualization_utils as vis_util
-		
-		# Name of the directory containing the object detection module we're using
-		MODEL_NAME = 'inference_graph'
-		IMAGE_NAME1 = 'IMG_0134.jpg'
-		
-		# Grab path to current working directory
-		CWD_PATH = os.getcwd()
-		CWD_PATH1 = "C:/Workspace/Machine Learning Project/Tensorflow_2.0/models/research/object_detection/images/test"
-		
-		# Path to frozen detection graph .pb file, which contains the model that is used
-		# for object detection.
-		PATH_TO_CKPT = os.path.join(CWD_PATH,MODEL_NAME,'frozen_inference_graph.pb')
-		
-		# Path to label map file
-		PATH_TO_LABELS = os.path.join(CWD_PATH,'training','labelmap.pbtxt')
-		
-
-		objects = []
-
-		for IMAGE_NAME in os.listdir(CWD_PATH1):
-			# Path to image
-			PATH_TO_IMAGE = os.path.join(CWD_PATH,IMAGE_NAME)
-			
-			# Number of classes the object detector can identify
-			NUM_CLASSES = 24
-			
-			# Load the label map.
-			# Label maps map indices to category names, so that when our convolution
-			# network predicts `5`, we know that this corresponds to `king`.
-			# Here we use internal utility functions, but anything that returns a
-			# dictionary mapping integers to appropriate string labels would be fine
-			label_map = label_map_util.load_labelmap(PATH_TO_LABELS)
-			categories = label_map_util.convert_label_map_to_categories(label_map, max_num_classes=NUM_CLASSES, use_display_name=True)
-			category_index = label_map_util.create_category_index(categories)
-			
-			print("done test")
-			# Load the Tensorflow model into memory.
-			detection_graph = tf.Graph()
-			with detection_graph.as_default():
-				od_graph_def = tf.compat.v1.GraphDef()
-				with tf.io.gfile.GFile(PATH_TO_CKPT, 'rb') as fid:
-					serialized_graph = fid.read()
-					od_graph_def.ParseFromString(serialized_graph)
-					tf.import_graph_def(od_graph_def, name='')
-			
-				sess = tf.compat.v1.Session(graph=detection_graph)
-			
-			# Define input and output tensors (i.e. data) for the object detection classifier
-			
-			# Input tensor is the image
-			image_tensor = detection_graph.get_tensor_by_name('image_tensor:0')
-			
-			# Output tensors are the detection boxes, scores, and classes
-			# Each box represents a part of the image where a particular object was detected
-			detection_boxes = detection_graph.get_tensor_by_name('detection_boxes:0')
-			
-			# Each score represents level of confidence for each of the objects.
-			# The score is shown on the result image, together with the class label.
-			detection_scores = detection_graph.get_tensor_by_name('detection_scores:0')
-			detection_classes = detection_graph.get_tensor_by_name('detection_classes:0')
-			
-			# Number of objects detected
-			num_detections = detection_graph.get_tensor_by_name('num_detections:0')
-			
-			# Load image using OpenCV and
-			# expand image dimensions to have shape: [1, None, None, 3]
-			# i.e. a single-column array, where each item in the column has the pixel RGB value
-			image = cv2.imread(PATH_TO_IMAGE)
-			image_expanded = np.expand_dims(image, axis=0)
-			
-			# Perform the actual detection by running the model with the image as input
-			(boxes, scores, classes, num) = sess.run(
-				[detection_boxes, detection_scores, detection_classes, num_detections],
-				feed_dict={image_tensor: image_expanded})
-			
-			# Draw the results of the detection (aka 'visulaize the results')
-			
-			vis_util.visualize_boxes_and_labels_on_image_array(
-				image,
-				np.squeeze(boxes),
-				np.squeeze(classes).astype(np.int32),
-				np.squeeze(scores),
-				category_index,
-				use_normalized_coordinates=True,
-				line_thickness=8,
-				min_score_thresh=0.60)
-			
-			# Display the result without the image
-			
-			threshold = 0.5 # in order to get higher percentages you need to lower this number; usually at 0.01 you get 100% predicted objects
-			for index, value in enumerate(classes[0]):
-				object_dict = {}
-				if scores[0, index] > threshold:
-					object_dict[(category_index.get(value)).get('name')] = round((scores[0, index]*100),2)
-					objects.append(object_dict)
-		
-		for i in objects:
-			print(i)
-			
-		# All the results have been drawn on image. Now display the image.
-		# cv2.imshow('Object detector', image)
-		
-		# Press any key to close the image
-		# cv2.waitKey(0)
-		
-		# Clean up
-		# cv2.destroyAllWindows()
-		return objects
-
-
-
-
-
-
-
-
-
-# class checking(object):
-
-	# def Test1():
-	# 	# This is needed since the notebook is stored in the object_detection folder.
-	# 	sys.path.append("..")
-		
-	# 	# Import utilites
-	# 	from utils import label_map_util
-	# 	from utils import visualization_utils as vis_util
-		
-	# 	# Name of the directory containing the object detection module we're using
-	# 	MODEL_NAME = 'inference_graph'
-	# 	IMAGE_NAME = 'IMG_0134.jpg'
-		
-	# 	# Grab path to current working directory
-	# 	CWD_PATH = os.getcwd()
-	# 	CWD_PATH1 = "C:/Workspace/Machine Learning Project/Tensorflow_2.0/models/research/object_detection/images/test"
-		
-	# 	# Path to frozen detection graph .pb file, which contains the model that is used
-	# 	# for object detection.
-	# 	PATH_TO_CKPT = os.path.join(CWD_PATH,MODEL_NAME,'frozen_inference_graph.pb')
-		
-	# 	# Path to label map file
-	# 	PATH_TO_LABELS = os.path.join(CWD_PATH,'training','labelmap.pbtxt')
-		
-	# 	# Path to image
-	# 	PATH_TO_IMAGE = os.path.join(CWD_PATH,IMAGE_NAME)
-		
-	# 	# Number of classes the object detector can identify
-	# 	NUM_CLASSES = 24
-		
-	# 	# Load the label map.
-	# 	# Label maps map indices to category names, so that when our convolution
-	# 	# network predicts `5`, we know that this corresponds to `king`.
-	# 	# Here we use internal utility functions, but anything that returns a
-	# 	# dictionary mapping integers to appropriate string labels would be fine
-	# 	label_map = label_map_util.load_labelmap(PATH_TO_LABELS)
-	# 	categories = label_map_util.convert_label_map_to_categories(label_map, max_num_classes=NUM_CLASSES, use_display_name=True)
-	# 	category_index = label_map_util.create_category_index(categories)
-		
-	# 	print("done test")
-	# 	# Load the Tensorflow model into memory.
-	# 	detection_graph = tf.Graph()
-	# 	with detection_graph.as_default():
-	# 		od_graph_def = tf.compat.v1.GraphDef()
-	# 		with tf.io.gfile.GFile(PATH_TO_CKPT, 'rb') as fid:
-	# 			serialized_graph = fid.read()
-	# 			od_graph_def.ParseFromString(serialized_graph)
-	# 			tf.import_graph_def(od_graph_def, name='')
-		
-	# 		sess = tf.compat.v1.Session(graph=detection_graph)
-		
-	# 	# Define input and output tensors (i.e. data) for the object detection classifier
-		
-	# 	# Input tensor is the image
-	# 	image_tensor = detection_graph.get_tensor_by_name('image_tensor:0')
-		
-	# 	# Output tensors are the detection boxes, scores, and classes
-	# 	# Each box represents a part of the image where a particular object was detected
-	# 	detection_boxes = detection_graph.get_tensor_by_name('detection_boxes:0')
-		
-	# 	# Each score represents level of confidence for each of the objects.
-	# 	# The score is shown on the result image, together with the class label.
-	# 	detection_scores = detection_graph.get_tensor_by_name('detection_scores:0')
-	# 	detection_classes = detection_graph.get_tensor_by_name('detection_classes:0')
-		
-	# 	# Number of objects detected
-	# 	num_detections = detection_graph.get_tensor_by_name('num_detections:0')
-		
-	# 	# Load image using OpenCV and
-	# 	# expand image dimensions to have shape: [1, None, None, 3]
-	# 	# i.e. a single-column array, where each item in the column has the pixel RGB value
-	# 	image = cv2.imread(PATH_TO_IMAGE)
-	# 	image_expanded = np.expand_dims(image, axis=0)
-		
-	# 	# Perform the actual detection by running the model with the image as input
-	# 	(boxes, scores, classes, num) = sess.run(
-	# 		[detection_boxes, detection_scores, detection_classes, num_detections],
-	# 		feed_dict={image_tensor: image_expanded})
-		
-	# 	# Draw the results of the detection (aka 'visulaize the results')
-		
-	# 	vis_util.visualize_boxes_and_labels_on_image_array(
-	# 		image,
-	# 		np.squeeze(boxes),
-	# 		np.squeeze(classes).astype(np.int32),
-	# 		np.squeeze(scores),
-	# 		category_index,
-	# 		use_normalized_coordinates=True,
-	# 		line_thickness=8,
-	# 		min_score_thresh=0.60)
-		
-	# 	# Display the result without the image
-	# 	objects = []
-	# 	threshold = 0.5 # in order to get higher percentages you need to lower this number; usually at 0.01 you get 100% predicted objects
-	# 	for index, value in enumerate(classes[0]):
-	# 		object_dict = {}
-	# 		if scores[0, index] > threshold:
-	# 			object_dict[(category_index.get(value)).get('name')] = round((scores[0, index]*100),2)
-	# 			objects.append(object_dict)
-		
-	# 	for i in objects:
-	# 		print(i)
-			
-	# 	# All the results have been drawn on image. Now display the image.
-	# 	cv2.imshow('Object detector', image)
-		
-	# 	# Press any key to close the image
-	# 	cv2.waitKey(0)
-		
-	# 	# Clean up
-	# 	cv2.destroyAllWindows()
-	
-	    
-# 	def task1():
-# 		print("done")
-
-
-
+out  = dummy.test
+print(out)
