@@ -1,4 +1,5 @@
 import TensorFlowController as tf
+from ColorDetectionController import Color_Detection as color
 import flask
 from flask import jsonify, request
 import sys
