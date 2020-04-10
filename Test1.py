@@ -24,9 +24,11 @@
 
 # data = {"output" : result}
 # print(data)
+from PIL import Image
+import pytesseract
 
-import os
+filename = "C:/Workspace/Machine Learning Project/Images/Test Images/Blue (1).JPG"
 
-IMG_PATH = "C:/Workspace/Machine Learning Project/Images/Test Images"
+text = pytesseract.image_to_string(Image.open(filename))
 
-print(os.listdir(IMG_PATH)[0])
+print(text)

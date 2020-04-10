@@ -20,7 +20,7 @@ def lat_res():
 
     COLOR_VALUE = color.detect_Color(os.path.join(IMG_PATH,os.listdir(IMG_PATH)[0]))
 
-    data = {"objectList" : object_val, "ColorName" : COLOR_VALUE}
+    data = {"objectList" : object_val, "colorName" : COLOR_VALUE}
     return jsonify(data)
 
 
