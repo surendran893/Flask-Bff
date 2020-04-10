@@ -25,7 +25,8 @@
 # data = {"output" : result}
 # print(data)
 
-import dummy
+import os
 
-out  = dummy.test
-print(out)
+IMG_PATH = "C:/Workspace/Machine Learning Project/Images/Test Images"
+
+print(os.listdir(IMG_PATH)[0])

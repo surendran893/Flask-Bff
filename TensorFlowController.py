@@ -9,7 +9,7 @@ sys.path.insert(1, 'C:/Workspace/Machine Learning Project/Testingtf2.0/models/re
 class final_checking(object):
     
 
-    def image_detection():
+    def image_detection(IMG_PATH):
         
         sys.path.insert(1, 'C:/Workspace/Machine Learning Project/Testingtf2.0/models/research/object_detection')
         sys.path.append("..")
@@ -22,8 +22,6 @@ class final_checking(object):
 
 
         CWD_PATH = "C:/Workspace/Machine Learning Project/Tensorflow_2.0/models/research/object_detection"
-
-        IMG_PATH = "C:/Workspace/Machine Learning Project/Images/Test Images"
 
         PATH_TO_CKPT = os.path.join(CWD_PATH,MODEL_NAME,'frozen_inference_graph.pb')
 

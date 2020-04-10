@@ -1,8 +1,8 @@
-import TensorFlowController as tf
+from TensorFlowController import final_checking as tf
 from ColorDetectionController import Color_Detection as color
 import flask
 from flask import jsonify, request
-import sys
+import sys, os
 
 # out = final_checking.final_checking
 
@@ -15,10 +15,12 @@ app.config["DEBUG"] = True
 
 @app.route('/api/imageDetect', methods=['POST'])
 def lat_res():
-    IMAGE_DETECTION_CLASS = tf.final_checking
-    object_val = IMAGE_DETECTION_CLASS.image_detection()
+    IMG_PATH = "C:/Workspace/Machine Learning Project/Images/Test Images"
+    object_val = tf.image_detection(IMG_PATH)
 
-    data = {"objectList" : object_val}
+    COLOR_VALUE = color.detect_Color(os.path.join(IMG_PATH,os.listdir(IMG_PATH)[0]))
+
+    data = {"objectList" : object_val, "ColorName" : COLOR_VALUE}
     return jsonify(data)
 
 

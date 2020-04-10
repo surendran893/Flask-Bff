@@ -6,13 +6,12 @@ class Color_Detection(object):
 
     #Global variable for Color Detection
     r = g = b = xpos = ypos = 0
-    img = None
 
     def getColorName(R,G,B):
 
         #Reading csv file with pandas and giving names to each column
         index=["color","color_name","hex","R","G","B"]
-        csv = pd.read_csv('colors.csv', names=index, header=None) 
+        csv = pd.read_csv('C:/Workspace/Machine Learning Project/Python_Flask_Bff/Flask-Bff/colors.csv', names=index, header=None) 
 
         minimum = 10000
         for i in range(len(csv)):
@@ -23,29 +22,25 @@ class Color_Detection(object):
         return cname
 
     #function to get x,y coordinates of mouse double click
-    def draw_function(x,y):
-        global b,g,r,xpos,ypos
-        xpos = x
-        ypos = y
+    def draw_function(x,y, imgPath):
+        img = cv2.imread(imgPath)
+        global b,g,r
         b,g,r = img[y,x]
         b = int(b)
         g = int(g)
         r = int(r)
+        return img
 
     def detect_Color(imgPath):
-        global img, csv
-        img = cv2.imread(imgPath)
+        # img = cv2.imread(imgPath)
+        print(imgPath)
 
-        Color_Detection.draw_function(933, 555)
-
-        #cv2.rectangle(image, startpoint, endpoint, color, thickness)-1 fills entire rectangle 
-        cv2.rectangle(img,(20,20), (750,60), (b,g,r), -1)
+        img = Color_Detection.draw_function(937, 555, imgPath)
 
         #Creating text string to display( Color name and RGB values )
         text = Color_Detection.getColorName(r,g,b) + ' R='+ str(r) +  ' G='+ str(g) +  ' B='+ str(b)
 
+        color_value = Color_Detection.getColorName(r,g,b)
         print("color value is ", text) 
 
-main = Color_Detection
-
-color_name = main.detect_Color("C:/Users/z014417/Downloads/colro detection/blue.jpg")
+        return color_value
