@@ -24,11 +24,44 @@
 
 # data = {"output" : result}
 # print(data)
-from PIL import Image
-import pytesseract
 
-filename = "C:/Workspace/Machine Learning Project/Images/Test Images/Blue (1).JPG"
+# from PIL import Image
+# import pytesseract
+# import cv2
+# import matplotlib.pyplot as plt
 
-text = pytesseract.image_to_string(Image.open(filename))
+# tessdata_dir_config = '--tessdata-dir "C:/Program Files (x86)/Tesseract-OCR/tessdata"'
+# pytesseract.pytesseract.tesseract_cmd = 'C:/Program Files (x86)/Tesseract-OCR/tesseract.exe'
 
-print(text)
+# image = cv2.imread("C:/Users/z014417/Downloads/Char Detection/opencv-text-detection/images/image4.jpg")
+
+
+# gray = cv2.cvtColor(image, cv2.COLOR_RGB2HSV)
+
+# (thresh, blackAndWhiteImage) = cv2.threshold(gray, 127, 255, cv2.THRESH_BINARY)
+# cv2.imshow('Black white image', blackAndWhiteImage)
+# cv2.imshow('Original image',image)
+# cv2.imshow('Gray image', gray)
+
+# originaltext = pytesseract.image_to_string(image)
+# blackwhitetext = pytesseract.image_to_string(blackAndWhiteImage)
+# graytext = pytesseract.image_to_string(gray)
+
+# print("originaltext value which we identified is ", originaltext)
+# print("blackwhitetext value which we identified is ", blackwhitetext)
+# print("graytext value which we identified is ", graytext)
+
+# cv2.waitKey(0)
+# cv2.destroyAllWindows()
+
+objects =  [{ "RXBC_PWR_WDW_SW" : 98.67 } ,{ "RXBC_FAB_ARR" : 98.67 } ,{ "RXBC_PB_PHND" : 98.67 } ,{ "RXBC_BLACK_MIRROR" : 98.67 } ,
+    { "RXBC_MANUAL_AUD/NAM" : 98.67 } ,{ "RXBC_NO_UGLB" : 98.67 } ,{ "RXBC_NO_LGLB" : 98.67 } ,{ "RXBC_TINT_AV" : 98.67 } ,
+    { "RXBC_TINT_TD" : 98.67 } ,{ "RXBC_TRIP_SW"  : 98.67 } ]
+
+result = []
+for obj in objects:
+    for val in obj:
+        result.append(val +"~" +str(obj[val]))
+
+data = {"objectList" : result} 
+print(data) 
